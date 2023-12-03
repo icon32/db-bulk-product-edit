@@ -17,12 +17,6 @@
  * WC tested up to: 3.6
  */
 
-
-//// Update the product's weight meta field
-//update_post_meta($product_id, '_weight', $new_weight);
-
-
-
 function db_bulk_edit_endpoint() {
     register_rest_route( 'db-bulk-edit/v1', '/get', array(
         array(
