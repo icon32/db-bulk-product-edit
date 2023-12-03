@@ -91,8 +91,6 @@ function db_call_function_javascript(){
         <script>
             let saveFieldRunning = false;
             function saveField(productID,fieldname){
-                
-
                 var fieldValue = $('.' + productID +' .'+fieldname + ' input[name="'+fieldname+'"]').val();
                 // console.log('Weight Changed for product: '+ productid + ' to ' + newweight);
                 var data = {product_id:productID , field_name:fieldname , field_value:fieldValue}
@@ -104,7 +102,6 @@ function db_call_function_javascript(){
                     contentType: 'application/json',
                     dataType: 'json',
                     success: function(response) {
-                        
                         if(response.status == true){
                             $('.' + productID +' .'+fieldname).html(fieldValue);
                             $('.' + productID +' .'+fieldname).css('background', 'lightgreen');
@@ -121,14 +118,9 @@ function db_call_function_javascript(){
                         console.log( error); // Handle any errors
                     }
                 });
-
-
             }
             jQuery(document).ready(function(){
-
                 var selectall = false;
-
-
                 $('.edit-field-button').on('click', function(){
                     var fieldname = $(this).closest('td').attr('class');
                     var productId = $(this).closest('tr').attr('class');
@@ -136,11 +128,8 @@ function db_call_function_javascript(){
                     var modifiedString = originalString.replace('<button class="edit-field-button">Edit</button>', '');
                     $(this).closest('td').html('<input type="text" name="'+fieldname+'" value="'+modifiedString+'"><button onclick="saveField('+productId+', `'+fieldname+'`)">Save</button>')
                     // $(this).
-
                     $('.'+productId +' .product-checkbox').prop('checked', true);
-
                 });
-
 
                 $('#selectAllBtn').on('click', function(){
                     if(selectall == false){
@@ -152,15 +141,11 @@ function db_call_function_javascript(){
                     }
                 });
 
-                
-
                 $('#editall').on('click', function(){
                     // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
                     $('.product-checkbox:checked').each(function() {
                         var dataLayer = $(this).data('layer');
-
                         var tdsInRow = $('.'+dataLayer).find('td');
-
                         tdsInRow.each(function(index) {
                             var tdContent = $(this).html(); // Get the HTML content of the td
                             if (tdContent.includes('<button class="edit-field-button">Edit</button>')) {
@@ -168,10 +153,7 @@ function db_call_function_javascript(){
                                 var modifiedString = tdContent.replace('<button class="edit-field-button">Edit</button>', '');
                                 $(this).html('<input type="text" name="'+tdClass+'" value="'+modifiedString+'"><button onclick="saveField('+dataLayer+', `'+tdClass+'`)">Save</button>')
                             }
-                            // Perform actions on each td element here
                         });
-                        // changeWeight(dataLayer)
-                        // console.log(dataLayer);
                     });
                 });
 
@@ -179,20 +161,14 @@ function db_call_function_javascript(){
                     // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
                     $('.product-checkbox:checked').each(function() {
                         var dataLayer = $(this).data('layer');
-
                         var tdsInRow = $('.'+dataLayer).find('td');
-
                         tdsInRow.each(function(index) {
                             var tdClass = $(this).attr('class');
                             var tdContent = $(this).html(); // Get the HTML content of the td
                             if (tdContent.includes('<button onclick="')) {
-                                
                                 saveField(dataLayer,tdClass);
-
                             }
-                            // Perform actions on each td element here
                         });
-
                     });
                 });
             });
