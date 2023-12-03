@@ -4,7 +4,7 @@
 /**
  * Plugin Name:       Edit all products bulk
  * Description:       This plugin was created Edit bulk products
- * Version:           1.3
+ * Version:           1.4
  * Text Domain:       dbtextdomain
  * Domain Path:       /language
  * Requires at least: 5.0
@@ -62,8 +62,6 @@ function db_bulk_edit_restrict_endpoint() {
     return new WP_Error('rest_forbidden', esc_html__('Unauthorized access.', 'your-text-domain'), array('status' => 401));
 }
 
-
-
 // Callback function for the custom endpoint
 function db_edit_fields_call( $request ) {
     $method = $request->get_method();
@@ -92,7 +90,6 @@ function db_edit_fields_call( $request ) {
     // $result = array('status' => true , 'data' => $data['sku']);
     return rest_ensure_response( $result );   //Return to the fron end
 }
-
 
 function db_call_function_javascript(){
     ?>
@@ -209,11 +206,10 @@ function db_call_function_javascript(){
     <?php
 }
 
-
 function check_field_in_database() {
     if ( isset($_GET['sexy']) == 'engine') {
 
-        // if ( is_user_logged_in()  && current_user_can( 'manage_options' )) {
+        if ( is_user_logged_in()  && current_user_can( 'manage_options' )) {
             ?>  
                 <style>
                     th , td{
@@ -272,7 +268,9 @@ function check_field_in_database() {
 
             <?php
             // User is logged in
-            echo 'You can naw use the ultimate Tech .... :P  <br><br><br><br>';
+            echo '<h1>Bulk Editor by DB</h1><br>';
+
+            echo 'You can now use the ultimate Tech .... :P  <br><br><br><br>';
             if(isset($_POST['product_per_page']) ){
                 if (is_numeric($_POST['product_per_page']) ) {
                     if($_POST['product_per_page']){
@@ -483,9 +481,7 @@ function check_field_in_database() {
             }
 
             die;
-        // }
+        }
     }
 }
 add_action( 'init', 'check_field_in_database' );
-
-
