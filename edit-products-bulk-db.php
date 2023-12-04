@@ -80,6 +80,12 @@ function db_edit_fields_call( $request ) {
     if($data['field_name'] == 'origin'){
         update_post_meta($data['product_id'], 'product_origin', $data['field_value']);
     }
+
+
+    // update_post_meta($product_id, '_sale_price_dates_from', strtotime($start_date));
+    // update_post_meta($product_id, '_sale_price_dates_to', strtotime($end_date));
+
+
     $result = array('status' => true , 'data' => $data);
     // $result = array('status' => true , 'data' => $data['sku']);
     return rest_ensure_response( $result );   //Return to the fron end
@@ -217,9 +223,9 @@ function check_field_in_database() {
                     .checkboxes , .count{
                         width:30px;
                     }
-                    table{
+                    /*table{
                         width:2000px;
-                    }
+                    }*/
                     button , input[type="submit"]{
                         padding:8px;
                         background:lightblue;
@@ -387,6 +393,9 @@ function check_field_in_database() {
                     $_product = get_product( $productID );
                     $categories = $_product->get_category_ids();
                     $product_origin = get_post_meta($productID, 'product_origin', true); 
+                   
+                    // $price_dates_from = get_post_meta($productID, '_sale_price_dates_from', true);
+                    // $price_dates_to = get_post_meta($productID, '_sale_price_dates_to', true);
 
 
                     // var_dump($categories);
