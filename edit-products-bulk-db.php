@@ -96,6 +96,7 @@ function db_call_function_javascript(){
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script>
             let saveFieldRunning = false;
+
             function saveField(productID,fieldname){
                 var fieldValue = $('.' + productID +' .'+fieldname + ' input[name="'+fieldname+'"]').val();
                 // console.log('Weight Changed for product: '+ productid + ' to ' + newweight);
@@ -126,8 +127,25 @@ function db_call_function_javascript(){
                 });
             }
 
+            function display_bar_edits(object,select_sxists){
+                if (object.checked) {
+                    select_sxists ++;
+                } else {
+                    select_sxists --;
+                }
+
+                if(select_sxists > 0){
+                    $('.edit-product-fields-bar').show(); // Show the div if checkbox is checked
+                }else{
+                    $('.edit-product-fields-bar').hide(); // Hide the div if checkbox is unchecked
+                }
+                return select_sxists;
+            }
+
             jQuery(document).ready(function(){
                 var selectall = false;
+                let select_sxists = 0;
+
                 $('.edit-field-button').on('click', function(){
                     var fieldname = $(this).closest('td').attr('class');
                     var productId = $(this).closest('tr').attr('class');
@@ -142,8 +160,12 @@ function db_call_function_javascript(){
                     if(selectall == false){
                         $('.product-checkbox').prop('checked', true);
                         selectall = true
+                        let select_sxists = 500;
+                        select_sxists =  display_bar_edits(this,select_sxists);
                     }else{
                         $('.product-checkbox').prop('checked', false);
+                        let select_sxists = 0;
+                        select_sxists =  display_bar_edits(this,select_sxists);
                         selectall = false
                     }
                 });
@@ -183,19 +205,9 @@ function db_call_function_javascript(){
                     });
                 });
 
-                let select_sxists = 0;
-                $('.product-checkbox').on('click',function() {
-                    if (this.checked) {
-                        select_sxists ++;
-                    } else {
-                        select_sxists --;
-                    }
-
-                    if(select_sxists > 0){
-                        $('.edit-product-fields-bar').show(); // Show the div if checkbox is checked
-                    }else{
-                        $('.edit-product-fields-bar').hide(); // Hide the div if checkbox is unchecked
-                    }
+                
+                $('.product-checkbox').on('change',function() {
+                    select_sxists =  display_bar_edits(this,select_sxists);
                 });
                 
 
