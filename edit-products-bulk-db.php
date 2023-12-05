@@ -125,6 +125,7 @@ function db_call_function_javascript(){
                     }
                 });
             }
+
             jQuery(document).ready(function(){
                 var selectall = false;
                 $('.edit-field-button').on('click', function(){
@@ -162,6 +163,41 @@ function db_call_function_javascript(){
                         });
                     });
                 });
+
+                $('#editallweight').on('click', function(){
+                    // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
+                    $('.product-checkbox:checked').each(function() {
+                        var dataLayer = $(this).data('layer');
+                        var tdsInRow = $('.'+dataLayer).find('td');
+                        tdsInRow.each(function(index) {
+                            var tdContent = $(this).html(); // Get the HTML content of the td
+                            if (tdContent.includes('<button class="edit-field-button">Edit</button>')) {
+                                var tdClass = $(this).attr('class');
+                                if(tdClass == 'weight'){
+                                    var modifiedString = tdContent.replace('<button class="edit-field-button">Edit</button>', '');
+                                    $(this).html('<input type="text" name="'+tdClass+'" value="'+modifiedString+'"><button onclick="saveField('+dataLayer+', `'+tdClass+'`)">Save</button>')
+                                }
+                                
+                            }
+                        });
+                    });
+                });
+
+                let select_sxists = 0;
+                $('.product-checkbox').on('click',function() {
+                    if (this.checked) {
+                        select_sxists ++;
+                    } else {
+                        select_sxists --;
+                    }
+
+                    if(select_sxists > 0){
+                        $('.edit-product-fields-bar').show(); // Show the div if checkbox is checked
+                    }else{
+                        $('.edit-product-fields-bar').hide(); // Hide the div if checkbox is unchecked
+                    }
+                });
+                
 
                 $('#saveall').on('click', function(){
                     // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
@@ -363,9 +399,20 @@ function check_field_in_database() {
                     $output = $ids;
                 }
                 // var_dump($output[0]);
-                echo '<button id="selectAllBtn">Select All</button>';
-                echo '<button id="editall" style="text-align:right;">Bulk Edit Selected </button>';
-                echo '<button id="saveall" style="text-align:right;">Bulk Save </button>';
+
+                ?>
+                <div>
+                    <div style="text-align:left; width:100%">
+                        <button id="selectAllBtn">Select All</button>
+                        <button id="saveall" style="text-align:right;">Bulk Save </button>
+                        <button id="editall" style="text-align:right;">Bulk Edit Selected </button>
+                    </div>
+                    
+                    <div class="edit-product-fields-bar" style="text-align:right; width:100%; display:none;">
+                        <button id="editallweight" style="text-align:right;">Edit Weight</button>
+                    </div>
+                </div>
+                <?php
                 echo '<br><br>';
 
                 echo '<table>';
