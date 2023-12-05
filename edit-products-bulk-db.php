@@ -142,6 +142,10 @@ function db_call_function_javascript(){
                 return select_sxists;
             }
 
+            function sale_submit(data){
+                console.log(data);
+            }
+
             jQuery(document).ready(function(){
                 var selectall = false;
                 let select_sxists = 0;
@@ -169,6 +173,49 @@ function db_call_function_javascript(){
                         selectall = false
                     }
                 });
+
+                
+
+                $('#bulksalebypercentage').on('click', function(){
+                    // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
+                    $('.salemodal').show();
+                    // $('.hide').show();
+                    var products = [];
+                    $('.product-checkbox:checked').each(function() {
+                        var dataLayer = $(this).data('layer');
+                        var tdsInRow = $('.'+dataLayer).find('td');
+                        products .push(dataLayer);
+                        
+                    });
+                    let p_to_d = products.join(',');
+                    if ($('.products_on_sale').length === 0) {
+                        $('.salemodal-content-elements').append('<input type="hidden" class="products_on_sale" name="products_on_sale" value="'+p_to_d+'">');
+                    }
+                    if ($('.percentage_to_sale').length === 0) {
+                        $('.salemodal-content-elements').append('<p class="p-t-s-p">Percentage to Sale:<input type="text" class="percentage_to_sale" name="percentage_to_sale" style="width:40px;">%</p>');
+                    }
+
+                });
+                $('.salemodal-close').on('click', function(){
+                    $('.salemodal').hide();
+                });
+                $('.sale-submit').on('click', function(){
+                    let productIds = $('.products_on_sale').val();
+                    let sale_percentage = $('.percentage_to_sale').val();
+                    let sale_from = $('.sale-from').val();
+                    let sale_to = $('.sale-to').val();
+                    var data = {productIds:productIds ,  sale_percentage:sale_percentage,sale_from:sale_from,sale_to:sale_to}
+                    sale_submit(data)
+
+                    $('.sale-from').val('');
+                    $('.sale-to').val('');
+                    $('.products_on_sale').remove();
+                    $('.p-t-s-p').remove();
+                    $('.salemodal').hide();
+                });
+
+
+
 
                 $('#editall').on('click', function(){
                     // Select all checked checkboxes with class 'mycheck' and get their data-layer attribute
@@ -230,10 +277,26 @@ function db_call_function_javascript(){
     <?php
 }
 
-function check_field_in_database() {
-    if ( isset($_GET['sexy']) == 'engine') {
+function db_bulk_product_edit_admin() {
+    $base_54 = "dashicons-admin-tools";
+    add_menu_page('DB Bulk Product Edit','DB Bulk Product Edit','manage_options',  'dbbulk', 'check_field_in_database', $base_54, 1);
+}
+add_action( 'admin_menu', 'db_bulk_product_edit_admin' );
 
+add_action( 'init', function(){
+    if ( isset($_GET['sexy']) == 'engine' ) {
         if ( is_user_logged_in()  && current_user_can( 'manage_options' )) {
+            check_field_in_database();
+            die;
+        }
+    }
+} );
+
+
+
+
+function check_field_in_database() {
+    
             ?>  
                 <style>
                     th , td{
@@ -293,7 +356,7 @@ function check_field_in_database() {
             <?php
             // User is logged in
             echo '<h1>Bulk Editor by DB</h1><br>';
-
+            echo 'Connect from empty space: <a href="/?sexy=engine" target="_blank">Here</a><br>';
             echo 'You can now use the ultimate Tech .... :P  <br><br><br><br>';
             if(isset($_POST['product_per_page']) ){
                 if (is_numeric($_POST['product_per_page']) ) {
@@ -422,6 +485,7 @@ function check_field_in_database() {
                     
                     <div class="edit-product-fields-bar" style="text-align:right; width:100%; display:none;">
                         <button id="editallweight" style="text-align:right;">Edit Weight</button>
+                        <button id="bulksalebypercentage" style="text-align:right;">Bulk Sale By Percentage</button>
                     </div>
                 </div>
                 <?php
@@ -515,11 +579,63 @@ function check_field_in_database() {
                     }
                 }
                 
-                    
+
+                ?>
+
+                <style>
+                    /* Modal styles */
+                    .salemodal {
+                    display: none;
+                    position: fixed;
+                    z-index: 999;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    }
+
+                    .salemodal-content {
+                    background-color: white;
+                    margin: 20% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 50%;
+                    }
+
+                    .salemodal-close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    }
+
+                    .salemodal-close:hover,
+                    .salemodal-close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                    }
+                </style>
+
+                <div id="salemodal" class="salemodal">
+                    <div class="salemodal-content">
+                        <span class="salemodal-close">&times;</span>
+                        <p class="salemodal-content-elements">
+                            Sale From: <input type="date" class="sale-from"><br>
+                            Sale To: <input type="date" class="sale-to">
+
+                        </p>
+                        <p><button class="sale-submit">Submit</button></p>
+                    </div>
+                </div>
+
+                <?php
+
+
             }
 
-            die;
-        }
-    }
+
+            
 }
-add_action( 'init', 'check_field_in_database' );
+
